@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 500px; margin: auto; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+        select, input { width: 100%; padding: 8px; margin-top: 5px; }
+        button { background-color: blue; color: white; padding: 10px; border: none; cursor: pointer; margin-top: 15px; width: 100%; }
+        button:hover { background-color: darkblue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Feedback Form</h2>
+        <label>Customer Name:</label>
+        <input type="text" id="customerName" readonly>
+
+        <label>Communication Response Time:</label>
+        <select id="communicationResponse">
+            <option>None</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select>
+
+        <label>Complaint Handling:</label>
+        <select id="complaintHandling">
+            <option>None</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select>
+
+        <label>Customer Service Response Time:</label>
+        <select id="customerServiceResponse">
+            <option>None</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select>
+
+        <label>Delivery Commitment:</label>
+        <select id="deliveryCommitment">
+            <option>None</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select>
+
+        <label>Generation Performance:</label>
+        <select id="generationPerformance">
+            <option>None</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select>
+
+        <button onclick="submitFeedback()">Submit Feedback</button>
+    </div>
+
+    <script>
+        // 🔹 Get Customer ID from URL
+        function getCustomerIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('customerId');
+        }
+
+        document.getElementById("customerName").value = getCustomerIdFromURL() || "Unknown Customer";
+
+        function submitFeedback() {
+            const customerId = getCustomerIdFromURL();
+            if (!customerId) {
+                alert("Error: Customer ID is missing.");
+                return;
+            }
+
+            const data = {
+                customerId: customerId,
+                communicationResponse: document.getElementById("communicationResponse").value,
+                complaintHandling: document.getElementById("complaintHandling").value,
+                customerServiceResponse: document.getElementById("customerServiceResponse").value,
+                deliveryCommitment: document.getElementById("deliveryCommitment").value,
+                generationPerformance: document.getElementById("generationPerformance").value
+            };
+
+            fetch("https://your-salesforce-instance.my.salesforce.com/services/apexrest/feedback", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer YOUR_ACCESS_TOKEN"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.text())
+            .then(result => {
+                if (result.includes("Success")) {
+                    alert("Feedback submitted successfully!");
+                } else {
+                    alert("Error Submitting Feedback: " + result);
+                }
+            })
+            .catch(error => alert("Request Failed: " + error));
+        }
+    </script>
+</body>
+</html>
