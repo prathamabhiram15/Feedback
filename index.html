@@ -17,11 +17,11 @@
     <div class="container">
         <h2>Feedback Form</h2>
         <label>Customer Name:</label>
-        <input type="text" id="customerName" readonly>
+        <input type="text" id="customerName" placeholder="Enter Customer Name" required>
 
         <label>Communication Response Time:</label>
         <select id="communicationResponse">
-            <option>None</option>
+            <option value="">Select</option>
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -31,7 +31,7 @@
 
         <label>Complaint Handling:</label>
         <select id="complaintHandling">
-            <option>None</option>
+            <option value="">Select</option>
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -41,7 +41,7 @@
 
         <label>Customer Service Response Time:</label>
         <select id="customerServiceResponse">
-            <option>None</option>
+            <option value="">Select</option>
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -51,7 +51,7 @@
 
         <label>Delivery Commitment:</label>
         <select id="deliveryCommitment">
-            <option>None</option>
+            <option value="">Select</option>
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -61,7 +61,7 @@
 
         <label>Generation Performance:</label>
         <select id="generationPerformance">
-            <option>None</option>
+            <option value="">Select</option>
             <option>1</option>
             <option>2</option>
             <option>3</option>
@@ -73,23 +73,11 @@
     </div>
 
     <script>
-        // 🔹 Get Customer ID from URL
-        function getCustomerIdFromURL() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('customerId');
-        }
-
-        document.getElementById("customerName").value = getCustomerIdFromURL() || "Unknown Customer";
-
         function submitFeedback() {
-            const customerId = getCustomerIdFromURL();
-            if (!customerId) {
-                alert("Error: Customer ID is missing.");
-                return;
-            }
+            const apiUrl = "https://your-salesforce-instance.my.salesforce.com/services/apexrest/feedback";
 
             const data = {
-                customerId: customerId,
+                customerName: document.getElementById("customerName").value,
                 communicationResponse: document.getElementById("communicationResponse").value,
                 complaintHandling: document.getElementById("complaintHandling").value,
                 customerServiceResponse: document.getElementById("customerServiceResponse").value,
@@ -97,20 +85,20 @@
                 generationPerformance: document.getElementById("generationPerformance").value
             };
 
-            fetch("https://your-salesforce-instance.my.salesforce.com/services/apexrest/feedback", {
+            fetch(apiUrl, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer YOUR_ACCESS_TOKEN"
+                    "Authorization": "Bearer YOUR_ACCESS_TOKEN"  // Replace with your access token
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.text())
+            .then(response => response.json())
             .then(result => {
-                if (result.includes("Success")) {
+                if (result.status === "Success") {
                     alert("Feedback submitted successfully!");
                 } else {
-                    alert("Error Submitting Feedback: " + result);
+                    alert("Error: " + result.message);
                 }
             })
             .catch(error => alert("Request Failed: " + error));
