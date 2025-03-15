@@ -1,44 +1,18 @@
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("feedbackForm").addEventListener("submit", function (event) {
-        event.preventDefault();
+let apiUrl = "https://renomenergyservicespvtltd2--devsand.sandbox.my.salesforce-sites.com/services/apexrest/feedback";
 
-        const apiUrl = "https://CS320.salesforce.com/services/apexrest/feedback";
-        const accessToken = "YOUR_ACCESS_TOKEN";  // Replace with a valid Salesforce access token
-
-        const data = {
-            customerName: document.getElementById("customerName").value.trim(),
-            communicationResponse: document.getElementById("communicationResponse").value,
-            complaintHandling: document.getElementById("complaintHandling").value,
-            customerServiceResponse: document.getElementById("customerServiceResponse").value,
-            deliveryCommitment: document.getElementById("deliveryCommitment").value,
-            generationPerformance: document.getElementById("generationPerformance").value
-        };
-
-        if (!data.customerName) {
-            alert("Please enter the Customer Name.");
-            return;
-        }
-
-        fetch(apiUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${accessToken}`
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.status === "Success") {
-                alert("✅ Feedback submitted successfully!");
-                document.getElementById("feedbackForm").reset();
-            } else {
-                alert("⚠️ Error: " + result.message);
-            }
-        })
-        .catch(error => {
-            alert("❌ Request Failed: " + error);
-            console.error("Error:", error);
-        });
-    });
-});
+fetch(apiUrl, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+})
+.then(response => response.text())
+.then(result => {
+    if (result.includes("Success")) {
+        alert("Feedback submitted successfully!");
+    } else {
+        alert("Error: " + result);
+    }
+})
+.catch(error => alert("Request Failed: " + error));
