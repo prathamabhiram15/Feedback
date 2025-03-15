@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("feedbackForm").addEventListener("submit", function (event) {
         event.preventDefault();
 
-        const apiUrl = "https://your-salesforce-instance.my.salesforce.com/services/apexrest/feedback";
+        const apiUrl = "https://CS320.salesforce.com/services/apexrest/feedback";
         const accessToken = "YOUR_ACCESS_TOKEN";  // Replace with a valid Salesforce access token
 
         const data = {
