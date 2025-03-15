@@ -1,29 +1,44 @@
-document.getElementById("feedbackForm").addEventListener("submit", function(event) {
-    event.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("feedbackForm").addEventListener("submit", function (event) {
+        event.preventDefault();
 
-    let apiUrl = "https://renomenergyservicespvtltd2--devsand.sandbox.my.salesforce.com/services/apexrest/feedback";
+        const apiUrl = "https://your-salesforce-instance.my.salesforce.com/services/apexrest/feedback";
+        const accessToken = "YOUR_ACCESS_TOKEN";  // Replace with a valid Salesforce access token
 
-    let data = {
-        customerName: document.getElementById("customerName").value,
-        communicationResponse: document.getElementById("communicationResponse").value,
-        complaintHandling: document.getElementById("complaintHandling").value,
-        customerServiceResponse: document.getElementById("customerServiceResponse").value,
-        deliveryCommitment: document.getElementById("deliveryCommitment").value,
-        generationPerformance: document.getElementById("generationPerformance").value
-    };
+        const data = {
+            customerName: document.getElementById("customerName").value.trim(),
+            communicationResponse: document.getElementById("communicationResponse").value,
+            complaintHandling: document.getElementById("complaintHandling").value,
+            customerServiceResponse: document.getElementById("customerServiceResponse").value,
+            deliveryCommitment: document.getElementById("deliveryCommitment").value,
+            generationPerformance: document.getElementById("generationPerformance").value
+        };
 
-    fetch(apiUrl, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.text())
-    .then(result => {
-        alert("Response: " + result);
-    })
-    .catch(error => {
-        alert("Error: " + error);
+        if (!data.customerName) {
+            alert("Please enter the Customer Name.");
+            return;
+        }
+
+        fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === "Success") {
+                alert("✅ Feedback submitted successfully!");
+                document.getElementById("feedbackForm").reset();
+            } else {
+                alert("⚠️ Error: " + result.message);
+            }
+        })
+        .catch(error => {
+            alert("❌ Request Failed: " + error);
+            console.error("Error:", error);
+        });
     });
 });
